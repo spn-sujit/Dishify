@@ -9,25 +9,24 @@ const isProtectedRoute=createRouteMatcher([
   "/dashboard(.*)",
 ]);
 
-export default clerkMiddleware(async(auth,req)=>{
-  const decision=await aj.protect(req);
-   if (decision.isDenied()) {
-    if (decision.reason.isBot()) {
-      return NextResponse.json(
-        { error: "No bots allowed", reason: decision.reason },
-        { status: 403 },
-      );
-    } else {
-      return NextResponse.json(
-        { error: "Forbidden", reason: decision.reason },
-        { status: 403 },
-      );
-    }
-  }
-  const {userId,redirectToSignIn}=await auth();
-  if(!userId && isProtectedRoute(req)){
+export default clerkMiddleware(async (auth, req) => {
+  const isProtected = isProtectedRoute(req);
+  const { userId, redirectToSignIn } = auth();
+
+  // 1. Clerk protection first
+  if (isProtected && !userId) {
     return redirectToSignIn();
   }
+
+  // 2. Run Arcjet ONLY for protected routes AND logged-in users
+  if (isProtected && userId) {
+    const decision = await aj.protect(req);
+
+    if (decision.isDenied()) {
+      return new NextResponse("Forbidden", { status: 403 });
+    }
+  }
+
   return NextResponse.next();
 });
 
