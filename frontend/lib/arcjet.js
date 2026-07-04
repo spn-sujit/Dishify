@@ -1,7 +1,7 @@
 import arcjet, { detectBot, shield, tokenBucket } from "@arcjet/next";
 
 
-const aj = arcjet({
+export const aj = arcjet({
   key: process.env.ARCJET_KEY,
   rules: [
     // Shield WAF - protects against SQL injection, XSS, etc.
