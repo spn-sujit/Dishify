@@ -10,21 +10,19 @@ const isProtectedRoute=createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const isProtected = isProtectedRoute(req);
-  const { userId, redirectToSignIn } = auth();
+  // Apply Arcjet protection FIRST (before Clerk auth check)
+  const decision = await aj.protect(req);
 
-  // 1. Clerk protection first
-  if (isProtected && !userId) {
-    return redirectToSignIn();
+  if (decision.isDenied()) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  // 2. Run Arcjet ONLY for protected routes AND logged-in users
-  if (isProtected && userId) {
-    const decision = await aj.protect(req);
+  // Then apply Clerk authentication
+  const { userId } = await auth();
 
-    if (decision.isDenied()) {
-      return new NextResponse("Forbidden", { status: 403 });
-    }
+  if (!userId && isProtectedRoute(req)) {
+    const { redirectToSignIn } = await auth();
+    return redirectToSignIn();
   }
 
   return NextResponse.next();
@@ -32,9 +30,9 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Skip Next.js internals and all static files
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     // Always run for API routes
-    '/(api|trpc)(.*)',
+    "/(api|trpc)(.*)",
   ],
 };

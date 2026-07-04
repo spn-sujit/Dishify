@@ -1,24 +1,23 @@
 import arcjet, { detectBot, shield, tokenBucket } from "@arcjet/next";
 
 
-export const aj=arcjet({
-    key:process.env.ARCJET_KEY,
-    rules:[
-        shield({
-            mode:"LIVE",
-        }),
+const aj = arcjet({
+  key: process.env.ARCJET_KEY,
+  rules: [
+    // Shield WAF - protects against SQL injection, XSS, etc.
+    shield({
+      mode: "LIVE", // Change to "DRY_RUN" to test without blocking
+    }),
+
+    // Bot detection - allow search engines, block malicious bots
     detectBot({
-      mode: "DRY_RUN", // will block requests. Use "DRY_RUN" to log only
-      // Block all bots except the following
+      mode: "LIVE",
       allow: [
-        "CATEGORY:SEARCH_ENGINE", // Google, Bing, etc
-        // Uncomment to allow these other common bot categories
-        // See the full list at https://arcjet.com/bot-list
-        //"CATEGORY:MONITOR", // Uptime monitoring services
-        "CATEGORY:PREVIEW", // Link previews e.g. Slack, Discord
+        "CATEGORY:SEARCH_ENGINE", // Google, Bing, etc.
+        "CATEGORY:PREVIEW", // Link previews (Slack, Discord, etc.)
       ],
     }),
-    ],
+  ],
 });
 
 export const freePantryScans=aj.withRule(
