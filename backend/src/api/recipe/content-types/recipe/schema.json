@@ -15,6 +15,9 @@
       "type": "string",
       "required": true
     },
+    "description": {
+      "type": "text"
+    },
     "cuisine": {
       "type": "enumeration",
       "enum": [
@@ -35,6 +38,7 @@
         "moroccan",
         "brazilian",
         "caribbean",
+        "middle - eastern",
         "british",
         "german",
         "portuguese",
@@ -96,9 +100,6 @@
       "relation": "oneToMany",
       "target": "api::saved-recipe.saved-recipe",
       "mappedBy": "recipe"
-    },
-    "description": {
-      "type": "text"
     }
   }
 }

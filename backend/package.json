@@ -15,9 +15,9 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
   "dependencies": {
-    "@strapi/plugin-cloud": "5.46.1",
-    "@strapi/plugin-users-permissions": "5.46.1",
-    "@strapi/strapi": "5.46.1",
+    "@strapi/plugin-cloud": "5.50.1",
+    "@strapi/plugin-users-permissions": "5.50.1",
+    "@strapi/strapi": "5.50.1",
     "pg": "8.20.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -26,11 +26,11 @@
   },
   "devDependencies": {},
   "engines": {
-    "node": ">=20.0.0 <=24.x.x",
+    "node": ">=20.0.0 <=26.x.x",
     "npm": ">=6.0.0"
   },
   "strapi": {
-    "uuid": "502f1133-53a1-4a0e-913d-091baacc4538",
-    "installId": "7c993c0e248650cdb03e066afb2a9b196b8bc0588ed19ac9dc9f80b4e3480495"
+    "uuid": "cdc10b97-75bb-4aac-b087-619a549d935c",
+    "installId": "7a4e78e0a4603857d97d2748a13d84d3cb59778af858aef62ec86388523d63ff"
   }
 }
